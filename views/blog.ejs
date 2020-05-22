@@ -16,7 +16,7 @@
 <p>conet Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore
   eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
 <form class="" action="/blog" method="post">
-<span id="ispan"><%=likes%></span><button class="far fa-thumbs-up fa-1x" id="ispan2" type="submit">like</button></form>
+<span id="ispan"><%=likes%></span><button class="far fa-thumbs-up fa-1x" id="ispan2" type="submit" onclick="this.form.submit()">like</button></form>
 </div>
 
 <%  BlogData.forEach(function(item) { %>
@@ -25,7 +25,11 @@
     <p><%=item.title%></p>
     <h5>Description</h5>
     <p><%= item.content %></p>
+    <form class="" action="/<%= item._id %> " method="post">
+      <span id="ispan"><%=item.likes%></span><button class="far fa-thumbs-up fa-1x" id="ispan2" name="likeBtn" type="submit" value="<%= item._id %> " onclick="this.form.submit()">like</button></form>
     </div>
+  
+    
 <%  });%>
 
 
