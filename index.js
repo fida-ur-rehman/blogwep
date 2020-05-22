@@ -192,14 +192,14 @@ res.redirect("/questions");
 app.get("/blog",function(req,res){
 
   if(req.isAuthenticated()){
-    clientStatus = "logout"
+    clientStatus = "/logout"
     logButton = "Logout"
     BlogData.find({},function(err,foundPost){
       res.render("blog",{likes:likes, title:foundPost.title, content:foundPost.content,likes: foundPost.likes, BlogData: foundPost, clientStatus: clientStatus, logButton: logButton})
 })
 
 } else {
-  clientStatus = "login"
+  clientStatus = "/signin"
   logButton = "Login"
   BlogData.find({},function(err,foundPost){
     res.render("blog",{likes:likes, title:foundPost.title, content:foundPost.content,likes: foundPost.likes, BlogData: foundPost, clientStatus: clientStatus, logButton: logButton})
@@ -207,10 +207,10 @@ app.get("/blog",function(req,res){
 
 }
 })
-app.post("/:like",function(req,res){
+app.post("/blog/:like",function(req,res){
   const likedId = req.params.like;
   if(req.isAuthenticated()){
-    clientStatus = "logout"
+    clientStatus = "/logout"
     logButton = "Logout"
     
     BlogData.findOneAndUpdate({_id: likedId}, { $inc: {likes:1} }, {new: true},function(err){
@@ -266,10 +266,10 @@ app.post("/signup",function(req,res){
   Client.register({username :req.body.username}, req.body.password,function(err,user){
     if(err){
       console.log(err);
-    res.redirect("signup");
+    res.redirect("/signup");
   }else{
     passport.authenticate("local")(req, res, function(){
-      res.redirect("blog");
+      res.redirect("/blog");
     })
   }
 })

@@ -25,7 +25,7 @@
     <p><%=item.title%></p>
     <h5>Description</h5>
     <p><%= item.content %></p>
-    <form class="" action="/<%= item._id %> " method="post">
+    <form class="" action="/blog/<%= item._id %>" method="post">
       <span id="ispan"><%=item.likes%></span><button class="far fa-thumbs-up fa-1x" id="ispan2" name="likeBtn" type="submit" value="<%= item._id %> " onclick="this.form.submit()">like</button></form>
     </div>
   
