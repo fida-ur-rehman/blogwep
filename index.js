@@ -196,7 +196,7 @@ app.post("/blog/report/mail", function(req,res){
       service: 'gmail',
       auth: {
         user: 'blogwepbyteckgeeks@gmail.com',
-        pass: 'Fida@Shar#'
+        pass: process.env.CLIENT_PASS
       }
     });
     
