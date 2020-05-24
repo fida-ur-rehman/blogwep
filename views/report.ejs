@@ -1,0 +1,19 @@
+<%- include("partials/header") -%>
+<div class="container bg p-4 my-5">
+    <h4>Report</h4>
+<form action="/blog/report/mail" method="post">
+    <div class="form-group">
+        <label for="">Subject</label>
+        <input class="form-control" type="text" name="reportSubject"></input>
+    </div>
+    <div class="form-group">
+        <label for="">Reason</label>
+        <textarea class="form-control" name="reportReason" id="" cols="auto" rows="5"></textarea>
+    </div>
+
+    <button class="btn btn-primary" type="submit" name="button">Report</button>
+</form>
+
+</div>
+
+<%- include("partials/footer") -%>

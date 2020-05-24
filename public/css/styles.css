@@ -1,3 +1,12 @@
+.d{
+
+  display: inline-block;
+  margin-left: 80%;
+  }
+  .secondbox h3{
+    display: inline-block;
+  }
+  
 body {
   margin: 0;
   padding: 0;
@@ -8,6 +17,26 @@ body {
   font-size: 16px;
   text-align: center;
   color: #1b1b2f;
+}
+
+#logo{
+  height: 3rem;
+}
+
+
+.gitBtn{
+  
+  border: #000 1px;
+  background-color: transparent;
+  color: #000;
+  margin-top:  2px;
+  align-items: center;
+ display: flex;
+
+}
+
+.gitBtn:hover{
+  color: #c9485b;
 }
 
 
@@ -156,7 +185,7 @@ margin-right: 40%; */
 }
 
 .link1 a:link, a:visited {
-  background-image: url("/images/page.jpg");
+  background-color: pink;
   padding: 1% 2%;
   text-decoration: none;
   margin-top: 3%;
@@ -185,9 +214,8 @@ margin-right: 40%; */
 }
 
 .link1 a:hover, a:active {
-  background-image: url("https://media.giphy.com/media/LZW4XQM1Cg2tO/giphy.gif");
-  background-size: cover;
-  transform: rotate(360deg);
+  background-color: red;
+  transition: 1s;
 }
 
 .link2 a:hover, a:active {

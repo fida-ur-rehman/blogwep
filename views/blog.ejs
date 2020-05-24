@@ -10,37 +10,45 @@
   </div>
 </center>
 </div>
-<div class="secondbox col-lg-4 col-sm-4 col-md-4">
-<h3>Title</h3>
-<h5>Description</h5>
+<div class="secondbox col-lg-4 col-sm-4 col-md-4 bg p-4">
+<h5>Title</h5>
+<p>Lorem ipsum</p>
+<hr>
+<h6>Description</h6>
 <p>conet Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore
   eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-<form class="" action="/blog" method="post">
-<span id="ispan"><%=likes%></span><button class="far fa-thumbs-up fa-1x" id="ispan2" type="submit" onclick="this.form.submit()">like</button></form>
 </div>
+<hr>
 
 <%  BlogData.forEach(function(item) { %>
-    <div class="secondbox col-lg-4 col-sm-4 col-md-4">
-    <h3>Title</h3>
+    <div class="secondbox col-lg-4 col-sm-4 col-md-4 bg p-4">
+      <div class="row">
+        <div class="col">
+          <h5>Title</h5>
+          
+        </div>
+        <div class="col">
+          <div class="d dropdown text-right">
+            <button class="btn btn-light" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <i class="fas fa-ellipsis-v"></i>
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+              <form action="/blog/report" method="post">
+                <button type="submit" name="reportId" value="<%= item._id %>" class="dropdown-item">Report</button>
+              </form>
+            </div>
+            </div>
+        </div>
+      </div>
     <p><%=item.title%></p>
-    <h5>Description</h5>
+    <hr>
+    <h6>Description</h6>
     <p><%= item.content %></p>
-    <form class="" action="/blog/<%= item._id %>" method="post">
-      <span id="ispan"><%=item.likes%></span><button class="far fa-thumbs-up fa-1x" id="ispan2" name="likeBtn" type="submit" value="<%= item._id %> " onclick="this.form.submit()">like</button></form>
     </div>
-  
-    
 <%  });%>
-
 
 
 </section>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<!-- <script type="text/javascript">
-  $("a").innerHTML="ds";
-
-
-<!-- </script> -->
-
 
 <%- include("partials/footer")-%>

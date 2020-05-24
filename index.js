@@ -3,6 +3,8 @@ require('dotenv').config();
 const express=require("express");
 const bodyParser=require('body-parser');
 const ejs=require('ejs');
+const nodemailer = require("nodemailer");
+const validator = require("email-validator");
 const mongoose=require('mongoose');
 const request=require('request');
 const session=require('express-session');
@@ -35,8 +37,9 @@ mongoose.set("useCreateIndex", true);
 
 const inc= "";
 var likes=0;
-let clientStatus = ""
-let logButton = ""
+let clientStatus = "";
+let logButton = "";
+let reportId = String;
 
 const clientSchema= new mongoose.Schema({
   email: String,
@@ -171,6 +174,68 @@ app.get("/ask_question", function(req,res){
  
 })
 
+
+app.post("/blog/report", function(req,res){
+  if(req.isAuthenticated()){
+    reportId = req.body.reportId;
+    clientStatus = "/logout"
+    logButton = "Logout"
+    res.render("report", {clientStatus: clientStatus, logButton: logButton});
+} else {
+  clientStatus = "/signin"
+  logButton = "SignIn"
+    res.render("signin", {var1:inc,clientStatus: clientStatus, logButton: logButton});
+}
+
+})
+
+app.post("/blog/report/mail", function(req,res){
+  if(req.isAuthenticated()){
+
+    let transport = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: 'blogwepbyteckgeeks@gmail.com',
+        pass: 'Fida@Shar#'
+      }
+    });
+    
+    var mailOptions = {
+      from: 'blogwepbyteckgeeks@gmail.com',
+      to: 'blogwepbyteckgeeks@gmail.com',
+      subject: "Report: "+req.body.reportSubject,
+      text: req.body.reportReason+" with Report Id: "+reportId+", and  User Id: "+req.user._id
+    };
+    
+    transport.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        return console.log(error);
+      }
+      console.log('Message sent: %s', info.messageId);
+    });
+    
+    res.redirect("/blog",);
+} else {
+  clientStatus = "/signin"
+  logButton = "SignIn"
+    res.render("signin", {var1:inc,clientStatus: clientStatus, logButton: logButton});
+}
+})
+
+app.post("/questions/report", function(req,res){
+  if(req.isAuthenticated()){
+    reportId = req.body.reportId;
+    clientStatus = "/logout"
+    logButton = "Logout"
+    res.render("report", {clientStatus: clientStatus, logButton: logButton});
+} else {
+  clientStatus = "/signin"
+  logButton = "SignIn"
+    res.render("signin", {var1:inc,clientStatus: clientStatus, logButton: logButton});
+}
+
+})
+
 app.post("/ask_question", function (req, res) {
 
   const newQuestion = new Question({
@@ -204,28 +269,7 @@ app.get("/blog",function(req,res){
   BlogData.find({},function(err,foundPost){
     res.render("blog",{likes:likes, title:foundPost.title, content:foundPost.content,likes: foundPost.likes, BlogData: foundPost, clientStatus: clientStatus, logButton: logButton})
 })
-
 }
-})
-app.post("/blog/:like",function(req,res){
-  const likedId = req.params.like;
-  if(req.isAuthenticated()){
-    clientStatus = "/logout"
-    logButton = "Logout"
-    
-    BlogData.findOneAndUpdate({_id: likedId}, { $inc: {likes:1} }, {new: true},function(err){
-      if(err){
-        console.log(err);
-      }
-    });
-     BlogData.find({},function(err,foundPost){
-     res.render("blog",{likes:likes, title:foundPost.title, content:foundPost.content, BlogData: foundPost, clientStatus: clientStatus, logButton: logButton})
-    })
-  } else {
-    clientStatus = "login"
-  logButton = "Login"
-    res.redirect("/signin");
-  }
 })
 
 app.get("/blogsubmit",function(req,res){
@@ -263,6 +307,7 @@ app.post("/blogsubmit",function(req,res){
 
 
 app.post("/signup",function(req,res){
+
   Client.register({username :req.body.username}, req.body.password,function(err,user){
     if(err){
       console.log(err);
@@ -273,6 +318,9 @@ app.post("/signup",function(req,res){
     })
   }
 })
+
+
+
 });
 
 
