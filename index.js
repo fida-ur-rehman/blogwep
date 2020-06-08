@@ -44,32 +44,41 @@ let reportId = String;
 const clientSchema= new mongoose.Schema({
   email: String,
   password: String,
-  googleId: String
+  username: String,
+  googleId: String,
+  thumbnail: String,
+ 
 });
-const blogdataSchema=new mongoose.Schema({
-  title:String,
-  content:String,
-  likes: {type:Number,default:0}
+const blogpostsSchema=new mongoose.Schema({
+  title: String,
+  content: String,
+  thumbnail: String,
+  postDate: String,
+  by: String
 });
 const answersSchema = new mongoose.Schema({
   description: String,
-  code: String
+  code: String,
+  postDate: String,
+  by: String
 });
 
-const QuestionsSchema=new mongoose.Schema({
+const questionsSchema=new mongoose.Schema({
   title: String,
   description: String,
   code: String,
-  answers: [answersSchema]
+  postDate: String,
+  answers: [answersSchema],
+  by: String
+  
 });
-
 clientSchema.plugin(passportLocalMongoose);
 clientSchema.plugin(findOrCreate);
 
 const Client = mongoose.model("Client",clientSchema);
-const BlogData= mongoose.model("BlogData",blogdataSchema);
+const BlogPost= mongoose.model("BlogPost",blogpostsSchema);
 const Answer = mongoose.model("Answer", answersSchema);
-const Question =mongoose.model("Question",QuestionsSchema);
+const Question =mongoose.model("Question",questionsSchema);
 
 passport.use(Client.createStrategy());
 
@@ -90,7 +99,7 @@ passport.use(new GoogleStrategy({
   userProfileURL: "https://www.googleapis.com/oauth2/v3/userinfo"
 },
 function(accessToken, refreshToken, profile, cb) {
-  Client.findOrCreate({ googleId: profile.id }, function (err, user) {
+  Client.findOrCreate({ googleId: profile.id, thumbnail: profile._json.picture, username: profile.displayName}, function (err, user) {
     return cb(err, user);
   });
 }
@@ -139,7 +148,7 @@ app.get("/questions", function(req,res){
   if(req.isAuthenticated()){
     clientStatus = "/logout"
     logButton = "Logout"
-    Question.find(function(err, foundQuestions){
+    Question.find().sort({_id: -1}).exec(function(err, foundQuestions){
       if(!err){
         res.render("questions", {questions: foundQuestions, clientStatus: clientStatus, logButton: logButton});
       } else {
@@ -150,7 +159,34 @@ app.get("/questions", function(req,res){
 } else {
   clientStatus = "/signin"
   logButton = "SignIn"
-  Question.find(function(err, foundQuestions){
+  Question.find().sort({_id: -1}).exec(function(err, foundQuestions){
+    if(!err){
+      res.render("questions", {questions: foundQuestions, clientStatus: clientStatus, logButton: logButton});
+    } else {
+      res.send(err);
+    }
+  })
+    
+}
+})
+
+app.post("/questions/search", function(req,res){
+
+  if(req.isAuthenticated()){
+    clientStatus = "/logout"
+    logButton = "Logout"
+    Question.find({$text: {$search: req.body.search}}).sort({_id: -1}).exec(function(err, foundQuestions){
+      if(!err){
+        res.render("questions", {questions: foundQuestions, clientStatus: clientStatus, logButton: logButton});
+      } else {
+        res.send(err);
+      }
+    })
+   
+} else {
+  clientStatus = "/signin"
+  logButton = "SignIn"
+  Question.find({$text: {$search: req.body.search}}).sort({_id: -1}).exec(function(err, foundQuestions){
     if(!err){
       res.render("questions", {questions: foundQuestions, clientStatus: clientStatus, logButton: logButton});
     } else {
@@ -241,7 +277,9 @@ app.post("/ask_question", function (req, res) {
   const newQuestion = new Question({
      title: req.body.questionTitle,
      description: req.body.questionContent,
-     code: req.body.questionCode
+     code: req.body.questionCode,
+     postDate: currentDate(),
+     by: req.user.username
   });
 
   newQuestion.save(function(err){
@@ -259,15 +297,36 @@ app.get("/blog",function(req,res){
   if(req.isAuthenticated()){
     clientStatus = "/logout"
     logButton = "Logout"
-    BlogData.find({},function(err,foundPost){
-      res.render("blog",{likes:likes, title:foundPost.title, content:foundPost.content,likes: foundPost.likes, BlogData: foundPost, clientStatus: clientStatus, logButton: logButton})
-})
+    BlogPost.find().sort({_id: -1}).exec(function(err,foundPost){
+      if(err) console.log(err);
+      res.render("blog",{BlogPost: foundPost, clientStatus: clientStatus, logButton: logButton})
+  })
 
 } else {
   clientStatus = "/signin"
   logButton = "Login"
-  BlogData.find({},function(err,foundPost){
-    res.render("blog",{likes:likes, title:foundPost.title, content:foundPost.content,likes: foundPost.likes, BlogData: foundPost, clientStatus: clientStatus, logButton: logButton})
+  BlogPost.find().sort({_id: -1}).exec(function(err,foundPost){
+    if(err) console.log(err);
+    res.render("blog",{BlogPost: foundPost, clientStatus: clientStatus, logButton: logButton})
+})
+}
+})
+
+app.post("/blog/search", function(req, res){
+  if(req.isAuthenticated()){
+    clientStatus = "/logout"
+    logButton = "Logout"
+    BlogPost.find({$text: {$search: req.body.search}}).sort({_id: -1}).exec(function(err,foundPost){
+      if(err) console.log(err);
+      res.render("blog",{BlogPost: foundPost, clientStatus: clientStatus, logButton: logButton})
+  })
+
+} else {
+  clientStatus = "/signin"
+  logButton = "Login"
+  BlogPost.find({$text: {$search: req.body.search}}).sort({_id: -1}).exec(function(err,foundPost){
+    if(err) console.log(err);
+    res.render("blog",{BlogPost: foundPost, clientStatus: clientStatus, logButton: logButton})
 })
 }
 })
@@ -286,11 +345,13 @@ app.get("/blogsubmit",function(req,res){
 
 
 app.post("/blogsubmit",function(req,res){
-
-  const newblog= new BlogData({
+  console.log(req.user)
+  const newblog= new BlogPost({
     title:req.body.blogtitle,
     content:req.body.content,
-    likes: 0
+    thumbnail: req.user.thumbnail,
+    postDate: currentDate(),
+    by: req.user.username
   });
   newblog.save(function(err){
     if(!err){
@@ -314,6 +375,11 @@ app.post("/signup",function(req,res){
     res.redirect("/signup");
   }else{
     passport.authenticate("local")(req, res, function(){
+      Client.updateOne({username: req.body.username},{$set: {thumbnail: "/images/user.png"}}, function(err){
+        if(err){
+          console.log(err);
+        }
+      }) 
       res.redirect("/blog");
     })
   }
@@ -328,7 +394,8 @@ app.post("/signup",function(req,res){
 app.post("/signin",function(req,res){
   const client = new Client({
     email: req.body.username,
-    password: req.body.password
+    password: req.body.password,
+    
 })
 
 req.login(client, function(err){
@@ -383,7 +450,9 @@ app.post("/:questionId", function(req, res){
   const questionId = req.params.questionId;
   const newAnswer = new Answer({
     description: req.body.answerDescription,
-    code: req.body.answerCode
+    code: req.body.answerCode,
+    postDate: currentDate(),
+    by: req.user.username
   })
 
   if(req.isAuthenticated()){
@@ -417,3 +486,16 @@ app.post("/:questionId", function(req, res){
 app.listen(3000,function(){
   console.log("server started")
 })
+
+
+// functions
+
+function currentDate(){
+  var today = new Date();
+  var dd = String(today.getDate()).padStart(2, '0');
+  var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+  var yyyy = today.getFullYear();
+  today = dd + '/' + mm + '/' + yyyy;
+
+  return today;
+}

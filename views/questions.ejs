@@ -1,19 +1,28 @@
 <%- include("partials/header") -%>
-<div class="container p-4 my-5">
-<div class="container p-4">
+
+
+
+  <div class="firstbox">
     <center>
-        <a id="askQuestion" href="/ask_question">Ask Question</a>
+        <a class="btn p-2" id="askQuestion" href="/ask_question">Ask Question</a>
+        <div class="searchBar my-5">
+          <form class="form-inline-flex" action="/questions/search" method="post">
+            <input id="searchInput" class="form-control mr-sm-2" autocomplete="off" type="search" name="search" placeholder="Search" aria-label="Search">
+            <button class="btn" type="submit"><i class="fa fa-search"></i></button>
+          </form>
+        </div>
 </center>
     
 </div>
 
 
-<div class="container">
+
+<div class="container my-5">
 
     
         <% questions.forEach(function(question) { %> 
             <a href="/<%= question.title %>">
-                <div class="bg question p-3">
+                <div class="bg question p-3 my-2">
                     <div class="row">
                         <div class="col">
                             <h5><%= question.title %> </h5>
@@ -37,10 +46,15 @@
                         <div class="col">
                             <p><%= question.description.substring(0, 140)+ " ..."%></p>
                         </div>
-                        <div class="col">
-                            <p class="hoverQuestion">Answer</p>
-                        </div>
-                        
+                    </div>
+                    <div class="row">
+                      <div class="col">
+                        <p class="postBy m-0">~by <%= question.by %> </p>
+                      </div>
+                      <div class="col">
+                        <p class="postBy m-0 float-right date"><%= question.postDate %></p>
+                      </div>
+
                     </div>
                </div>
            </a>    
@@ -49,7 +63,7 @@
     
 
 </div>
-</div>
+
 
 
 <%- include("partials/footer") -%>
