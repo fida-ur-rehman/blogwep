@@ -1,19 +1,22 @@
 <%- include("partials/header") -%>
 
 
-
+<section class="main-section">
   <div class="firstbox">
+   
     <center>
         <a class="btn p-2" id="askQuestion" href="/ask_question">Ask Question</a>
-        <div class="searchBar my-5">
+        <div class="searchBar my-3">
           <form class="form-inline-flex" action="/questions/search" method="post">
-            <input id="searchInput" class="form-control mr-sm-2" autocomplete="off" type="search" name="search" placeholder="Search" aria-label="Search">
+            <input id="searchInput" class="form-control mr-2" autocomplete="off" type="search" name="search" placeholder="Search" aria-label="Search">
             <button class="btn" type="submit"><i class="fa fa-search"></i></button>
           </form>
         </div>
 </center>
     
 </div>
+</section>
+
 
 
 
@@ -33,9 +36,9 @@
                           <button class="btn btn-light" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <i class="fas fa-ellipsis-v"></i>
                           </button>
-                          <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                          <div class="dropdown-menu dropdown-menu-right dropdown-menu-lg-left" aria-labelledby="dropdownMenuButton">
                             <form action="/questions/report" method="post">
-                              <button type="submit" name="reportId" value="<%= question._id %>" class="dropdown-item">Report</button>
+                              <button type="submit" name="reportId" value="<%= question._id %>" class="dropdown-item reportBtn">Report</button>
                             </form>
                           </div>
                           </div>

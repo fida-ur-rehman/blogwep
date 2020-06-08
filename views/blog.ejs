@@ -1,23 +1,23 @@
 <%- include("partials/header") -%>
 
-<section>
+<section class="main-section">
 
 <div class="firstbox">
   <h1><b>H</b>appy <b>S</b>crolling!</h1>
   <center>
-    <div class="my-5">
+    <div class="m-3">
     <a class="btn p-2" id="askQuestion" href="/blogsubmit">Write a Blog</a>
   </div>
-  <div class="searchBar">
+  <div class="searchBar my-3">
     <form class="form-inline-flex" action="/blog/search" method="post">
-      <input id="searchInput" class="form-control mr-sm-2" autocomplete="off" type="search" name="search" placeholder="Search" aria-label="Search">
+      <input id="searchInput" class="form-control mr-2" autocomplete="off" type="search" name="search" placeholder="Search" aria-label="Search">
       <button class="btn" type="submit"><i class="fa fa-search"></i></button>
     </form>
   </div>
   
 </center>
 </div>
-
+</section>
 
 <% BlogPost.forEach(function(item) { %>
   <div class="secondbox col-lg-4 col-sm-4 col-md-4 bg p-4 my-5">
@@ -36,7 +36,7 @@
               <button class="btn btn-light" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <i class="fas fa-ellipsis-v"></i>
               </button>
-              <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+              <div class="dropdown-menu dropdown-menu-right dropdown-menu-lg-left" aria-labelledby="dropdownMenuButton">
                 <form action="/blog/report" method="post">
                   <button type="submit" name="reportId" value="<%= item._id %>" class="dropdown-item">Report</button>
                 </form>
@@ -63,7 +63,7 @@
 <%  });%>
 
 
-</section>
+
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
 <%- include("partials/footer")-%>

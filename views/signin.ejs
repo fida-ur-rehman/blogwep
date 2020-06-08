@@ -1,29 +1,18 @@
 <%- include("partials/header") -%>
-
-<form class="formsignin" action="/signin" method="post" data-aos="zoom-out">
-
-
-
+<div class="container bg main-section text-center p-5">
 <h1>Sign <span>In</span></h1>
-<table>
-  <tr>
-
-
-<td>
-  <div class="formsignindiv" >
-  <input type="email" name="username" placeholder="Enter Your Email">
-<input type="password" name="password" placeholder="Password">
-<h3><%= var1 %></h3>
-<button type="submit" name="button"  class="btn btn-info">Submit</button>
-</div>
-</td>
-
-
-<div class="formsignindiv2 ">
-
-
-  <td>Facebook Google APIS</td>
-  <td>
+<div class="row">
+  <div class="col-sm-12 col-lg-6">
+    <form class="formsignin" action="/signin" method="post" data-aos="zoom-out">
+    <div >
+      <input type="email" name="username" placeholder="Enter Your Email">
+    <input type="password" name="password" placeholder="Password">
+    <h3><%= var1 %></h3>
+    <button type="submit" name="button"  class="btn btn-info">Submit</button>
+    </div>
+  </form>
+  </div>
+  <div class="col-sm-12 col-lg-6 my-auto">
     <div class="card">
       <div class="card-body">
         <a class="btn btn-block" href="/auth/google" role="button">
@@ -32,12 +21,13 @@
         </a>
       </div>
     </div>
-  </td>
-  
   </div>
+</div>
+</div>
 
 
-</tr>
-</table>
-</form>
+
+
+
+
 <%- include("partials/footer") -%>
