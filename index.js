@@ -36,10 +36,13 @@ mongoose.set("useCreateIndex", true);
 
 
 const inc= "";
-var likes=0;
 let clientStatus = "";
 let logButton = "";
 let reportId = String;
+var x = Number;
+var err = "hide";
+let userEmail = String;
+
 
 const clientSchema= new mongoose.Schema({
   email: String,
@@ -111,7 +114,7 @@ app.get("/",function(req,res){
     logButton = "Logout"
     res.render("home", {clientStatus: clientStatus, logButton: logButton});
 } else {
-  clientStatus = "/signup"
+  clientStatus = "/verify"
   logButton = "signup"
     res.render("home", {clientStatus: clientStatus, logButton: logButton});
 }
@@ -132,16 +135,71 @@ app.get("/auth/google/blog",
 app.get("/signup",function(req,res){
   clientStatus = "/signin"
   logButton = "SignIn"
-  res.render("signup", {clientStatus: clientStatus, logButton: logButton})
+  res.render("signup", {clientStatus: clientStatus, logButton: logButton, LoginAs: userEmail})
 })
 
 
 app.get("/signin",function(req,res){
-  clientStatus = "/signup"
+  clientStatus = "/verify"
   logButton = "SignUp"
   res.render("signin",{var1:inc, clientStatus: clientStatus, logButton: logButton})
 })
 
+app.get("/verify",function(req,res){
+  clientStatus = "/signin"
+  logButton = "SignIn"
+  res.render("verify", {clientStatus: clientStatus, logButton: logButton})
+})
+app.post("/verify",function(req,res){
+  clientStatus = "/signin"
+  logButton = "SignIn"
+  userEmail = req.body.email;
+  x= random();
+  
+  
+
+  let transport = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: 'blogwepbyteckgeeks@gmail.com',
+      pass: process.env.CLIENT_PASS
+    }
+  });
+  
+  var mailOptions = {
+    from: 'blogwepbyteckgeeks@gmail.com',
+    to: userEmail,
+    subject: "OTP",   
+    text: "Your OTP for BlogWep verification: "+x
+  };
+  
+  transport.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      
+      return console.log(error);
+    }
+    console.log('Message sent: %s', info.messageId);
+  });
+
+  res.redirect("/verify/OTP");
+})
+
+app.get("/verify/OTP",function(req,res){
+  clientStatus = "/signin"
+  logButton = "SignIn"
+  res.render("otp", {clientStatus: clientStatus, logButton: logButton, err: err})
+})
+app.post("/verify/OTP",function(req,res){
+  clientStatus = "/signin"
+  logButton = "SignIn"
+  if(Number(req.body.otp) === x){
+    res.render("signup", {var1:inc,clientStatus: clientStatus, logButton: logButton,  LoginAs: userEmail})
+  } else {
+    err = "show"
+    res.render("otp",{clientStatus: clientStatus, logButton: logButton, err: err})
+  }
+  
+})
 
 app.get("/questions", function(req,res){
 
@@ -337,7 +395,7 @@ app.get("/blogsubmit",function(req,res){
     logButton = "Logout"
     res.render("blogsubmit", {clientStatus: clientStatus, logButton: logButton});
 } else {
-  clientStatus = "/signup"
+  clientStatus = "/verify"
   logButton = "signup"
   res.render("signin", {var1:inc, clientStatus: clientStatus, logButton: logButton});
 }
@@ -431,7 +489,7 @@ app.get("/:questionTitle", function(req,res){
       }
     })
 } else {
-  clientStatus = "/signup"
+  clientStatus = "/verify"
   logButton = "signup"
   Question.findOne({title: questionTitle}, function(err, foundQuestion){
     if(foundQuestion){
@@ -445,7 +503,7 @@ app.get("/:questionTitle", function(req,res){
  
 })
 
-app.post("/:questionId", function(req, res){
+app.post("/questions/:questionId", function(req, res){
 
   const questionId = req.params.questionId;
   const newAnswer = new Answer({
@@ -469,7 +527,7 @@ app.post("/:questionId", function(req, res){
     }) 
 
 } else {
-  clientStatus = "/signup"
+  clientStatus = "/verify"
   logButton = "signup"
   Question.findOne({_id: questionId}, function(err, foundQuestion){
     if(foundQuestion){
@@ -498,4 +556,10 @@ function currentDate(){
   today = dd + '/' + mm + '/' + yyyy;
 
   return today;
+}
+
+
+function random(){
+  var x = Math.floor(1000 + Math.random() * 9000);
+  return x;
 }

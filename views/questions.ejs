@@ -27,11 +27,11 @@
             <a href="/<%= question.title %>">
                 <div class="bg question p-3 my-2">
                     <div class="row">
-                        <div class="col">
-                            <h5><%= question.title %> </h5>
+                        <div class="col-9">
+                            <h5>>>&nbsp;&nbsp;&nbsp;<%= question.title.substring(0, 60)+ " ..." %> </h5>
                         </div>
                         
-                        <div class="col text-right">
+                        <div class="col-3 text-right">
                         <div class="d dropdown">
                           <button class="btn btn-light" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <i class="fas fa-ellipsis-v"></i>
@@ -47,7 +47,7 @@
                     
                     <div class="row">
                         <div class="col">
-                            <p><%= question.description.substring(0, 140)+ " ..."%></p>
+                            <p><%= question.description.substring(0, 125)+ " ..."%></p>
                         </div>
                     </div>
                     <div class="row">
@@ -67,7 +67,7 @@
 
 </div>
 
-
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
 <%- include("partials/footer") -%>
 

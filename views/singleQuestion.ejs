@@ -3,14 +3,14 @@
 <div class="container bg p-4 my-2">
     
         <label for="">Title</label> 
-        <h5 class="my-2"><%= title %> </h5>
+        <h5 class="my-2 blogD"><%= title %> </h5>
     
         
         <hr>
 
 
          <label for="">Description</label>
-        <p class="my-2"><%= description %> </p>
+        <p class="my-2 blogD"><%= description %> </p>
       
         
         <hr>
@@ -31,14 +31,14 @@
         <div class="title border">
             <div class="row">
                 <div class="col">
-                    <p><%= answer.description %> </p>
+                    <p class="blogD"><%= answer.description %> </p>
                 </div>
                 
             </div>
             <hr>
             <div class="row">
                 <div class="col">
-                    <p class="code p-3"><%= answer.code %> </p>
+                    <p class="code p-3 blogD"><%= answer.code %> </p>
                 </div>
                 
             </div>
@@ -53,7 +53,7 @@
 
 <div class="container bg p-4">
         <h4 class="my-2">Your Answer</h4>
-        <form action="/<%= _id %>" method="post">
+        <form action="/questions/<%= _id %>" method="post">
                 <div class="form-group">
                     <label for="">Answer Description</label>
                     <textarea class="form-control" name="answerDescription" id="" cols="auto" rows="5"></textarea>
@@ -68,5 +68,5 @@
         </div>
 </div>
 
-
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <%- include("partials/footer") -%>

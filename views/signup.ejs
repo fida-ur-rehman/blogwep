@@ -2,31 +2,25 @@
 
 <div class="container bg main-section text-center p-5">
   <h1>Sign <span>Up</span></h1>
-  <div class="row">
-    <div class="col-sm-12 col-lg-6">
+  <div class="d-inline-flex">
+    <p>Sign Up as</p>&nbsp;&nbsp;<p class="loginAs"><%= LoginAs %></p>
+  </div>
+  
+  <div class="row text-center">
+    <div class="col-sm-12 col-lg-6 col-centered">
       <form class="formsignin" action="/signup" method="post" data-aos="zoom-out">
-      <div >
-        <input type="email"    name="username"  placeholder="Enter Your Email">
+      <div>
+        <h4>Create Password</h4>  
+        <input type="hidden" value="<%= LoginAs %>" name="username">
 <input type="password" name="pass"  placeholder="Password">
 <input type="password" name="password" placeholder="Confirm Password">
 <a href="/signin"> Signin Instead?</a><br>
 <button type="submit" name="button" class="btn btn-info my-2">Submit</button>
       </div>
     </form>
-    </div>
-    <div class="col-sm-12 col-lg-6 my-auto">
-      
-        <div class="">
-          <div class="card-body">
-            <a class="btn btn-block" href="/auth/google" role="button">
-              <i class="fab fa-google"></i>
-              Sign In with Google
-            </a>
-          </div>
-        </div>
+  </div>
     
   </div>
   </div>
-  </div>
-
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <%- include("partials/footer") -%>
