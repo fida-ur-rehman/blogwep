@@ -4,7 +4,7 @@ const express=require("express");
 const bodyParser=require('body-parser');
 const ejs=require('ejs');
 const nodemailer = require("nodemailer");
-const validator = require("email-validator");
+
 const mongoose=require('mongoose');
 const request=require('request');
 const session=require('express-session');
@@ -12,7 +12,7 @@ const passport=require("passport");
 const passportLocalMongoose=require("passport-local-mongoose");
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const findOrCreate = require("mongoose-findorcreate");
-let ObjectId = require('mongodb').ObjectID;
+
 
 const app=express();
 
@@ -40,8 +40,9 @@ let clientStatus = "";
 let logButton = "";
 let reportId = String;
 var x = Number;
-var err = "hide";
 let userEmail = String;
+let err = String;
+let errOtp = String;
 
 
 const clientSchema= new mongoose.Schema({
@@ -135,7 +136,8 @@ app.get("/auth/google/blog",
 app.get("/signup",function(req,res){
   clientStatus = "/signin"
   logButton = "SignIn"
-  res.render("signup", {clientStatus: clientStatus, logButton: logButton, LoginAs: userEmail})
+  err = ""
+  res.render("signup", {clientStatus: clientStatus, logButton: logButton, LoginAs: userEmail, err: err})
 })
 
 
@@ -187,16 +189,18 @@ app.post("/verify",function(req,res){
 app.get("/verify/OTP",function(req,res){
   clientStatus = "/signin"
   logButton = "SignIn"
-  res.render("otp", {clientStatus: clientStatus, logButton: logButton, err: err})
+  errOtp = ""
+  res.render("otp", {clientStatus: clientStatus, logButton: logButton,errOtp: errOtp})
 })
 app.post("/verify/OTP",function(req,res){
   clientStatus = "/signin"
   logButton = "SignIn"
   if(Number(req.body.otp) === x){
-    res.render("signup", {var1:inc,clientStatus: clientStatus, logButton: logButton,  LoginAs: userEmail})
+    err = ""
+    res.render("signup", {var1:inc,clientStatus: clientStatus, logButton: logButton,  LoginAs: userEmail, err: err})
   } else {
-    err = "show"
-    res.render("otp",{clientStatus: clientStatus, logButton: logButton, err: err})
+    errOtp = "Invalid OTP"
+    res.render("otp",{clientStatus: clientStatus, logButton: logButton,errOtp: errOtp})
   }
   
 })
@@ -427,6 +431,7 @@ app.post("/blogsubmit",function(req,res){
 
 app.post("/signup",function(req,res){
 
+if(req.body.pass === req.body.password){
   Client.register({username :req.body.username}, req.body.password,function(err,user){
     if(err){
       console.log(err);
@@ -442,7 +447,10 @@ app.post("/signup",function(req,res){
     })
   }
 })
-
+} else {
+  err = "Password Dosen't Match";
+  res.render("signup", {var1:inc,clientStatus: clientStatus, logButton: logButton,LoginAs: userEmail, err: err});
+}
 
 
 });

@@ -1,16 +1,14 @@
 <%- include("partials/header") -%>
 
 <div class="container bg main-section verify text-center p-5">
-    <div class="alert alert-danger alert-dismissible fade show" class="<%= err %>">
-        <strong>Error!</strong> A problem has been occurred while submitting your data.
-        <button type="button" class="close" data-dismiss="alert">&times;</button>
-    </div>
+
 
     <center>
         <h1>Enter OTP</h1>
         <form class="formsignin" action="/verify/OTP" method="post" data-aos="zoom-out">
             <div>
-              <input type="String" name="otp"  placeholder="Enter OTP">
+              <input type="String" name="otp"  placeholder="Enter OTP" required>
+              <p class="loginAs"><%= errOtp %> </p>
       <button type="submit" name="button" class="btn btn-info my-2">Get OTP</button>
             </div>
     </center>

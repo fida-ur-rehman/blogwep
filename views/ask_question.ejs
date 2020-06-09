@@ -4,15 +4,15 @@
 <form action="/ask_question" method="post">
     <div class="form-group">
         <label for="">Title</label>
-        <input class="form-control" type="text" name="questionTitle" maxlength="150"></input>
+        <input class="form-control" type="text" name="questionTitle" maxlength="150" required></input>
     </div>
     <div class="form-group">
         <label for="">Question Description</label>
-        <textarea class="form-control" name="questionContent" id="" cols="auto" rows="5"></textarea>
+        <textarea class="form-control" name="questionContent" id="" cols="auto" rows="5" required></textarea>
     </div>
     <div class="form-group">
         <label for="">Code</label>
-        <textarea class="form-control" name="questionCode" id="" cols="auto" rows="3"></textarea>
+        <textarea class="form-control" name="questionCode" id="" cols="auto" rows="3" required></textarea>
     </div>
     <button class="btn btn-primary" type="submit" name="button">Publish</button>
 </form>

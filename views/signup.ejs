@@ -3,7 +3,7 @@
 <div class="container bg main-section text-center p-5">
   <h1>Sign <span>Up</span></h1>
   <div class="d-inline-flex">
-    <p>Sign Up as</p>&nbsp;&nbsp;<p class="loginAs"><%= LoginAs %></p>
+    <p>Sign Up as</p>&nbsp;&nbsp;<h5 class="loginAs"><%= LoginAs %></h5>
   </div>
   
   <div class="row text-center">
@@ -12,8 +12,9 @@
       <div>
         <h4>Create Password</h4>  
         <input type="hidden" value="<%= LoginAs %>" name="username">
-<input type="password" name="pass"  placeholder="Password">
-<input type="password" name="password" placeholder="Confirm Password">
+<input type="password" name="pass"  placeholder="Password" required>
+<input type="password" name="password" placeholder="Confirm Password" required>
+<p class="loginAs"><%= err %></p>
 <a href="/signin"> Signin Instead?</a><br>
 <button type="submit" name="button" class="btn btn-info my-2">Submit</button>
       </div>
