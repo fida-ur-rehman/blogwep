@@ -1,18 +1,20 @@
 <%- include("partials/header") -%>
+<section class="main-section">
+    <div class="container bg verify text-center p-5 mb-auto errDiv">
 
-<div class="container bg main-section verify text-center p-5">
 
+        <center>
+            <h1>Enter OTP</h1>
+            <form class="formsignin col-3" action="/verify/OTP" method="post" data-aos="zoom-out">
+                <div>
+                  <input type="String" name="otp"  placeholder="Enter OTP" required>
+                  <p class="loginAs"><%= errOtp %> </p>
+          <button type="submit" name="button" class="btn btn-info my-2">Get OTP</button>
+                </div>
+        </center>
+    
+    </div>
+</section>
 
-    <center>
-        <h1>Enter OTP</h1>
-        <form class="formsignin" action="/verify/OTP" method="post" data-aos="zoom-out">
-            <div>
-              <input type="String" name="otp"  placeholder="Enter OTP" required>
-              <p class="loginAs"><%= errOtp %> </p>
-      <button type="submit" name="button" class="btn btn-info my-2">Get OTP</button>
-            </div>
-    </center>
-
-</div>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <%- include("partials/footer") -%>

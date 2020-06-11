@@ -109,15 +109,40 @@ function(accessToken, refreshToken, profile, cb) {
 }
 ));
 
+const menu = [
+  {
+      name: 'Home',
+      url: '/'
+  },
+  {
+      name: 'Blog',
+      url: '/blog'
+  },
+  {
+      name: 'Q & A',
+      url: '/questions'
+
+  },
+  {
+      name: 'Contact',
+      url: '/contact'
+  },
+  {
+      name: 'About',
+      url: '/about'
+  }
+  
+]
+
 app.get("/",function(req,res){
   if(req.isAuthenticated()){
     clientStatus = "/logout"
     logButton = "Logout"
-    res.render("home", {clientStatus: clientStatus, logButton: logButton});
+    res.render("home", {clientStatus: clientStatus, logButton: logButton,menu:menu,url: req.url});
 } else {
   clientStatus = "/verify"
   logButton = "signup"
-    res.render("home", {clientStatus: clientStatus, logButton: logButton});
+    res.render("home", {clientStatus: clientStatus, logButton: logButton,menu:menu,url: req.url});
 }
 });
 
@@ -137,29 +162,86 @@ app.get("/signup",function(req,res){
   clientStatus = "/signin"
   logButton = "SignIn"
   err = ""
-  res.render("signup", {clientStatus: clientStatus, logButton: logButton, LoginAs: userEmail, err: err})
+  
+  res.render("signup", {clientStatus: clientStatus, logButton: logButton, LoginAs: userEmail, err: err,menu:menu,url: req.url})
 })
 
 
 app.get("/signin",function(req,res){
   clientStatus = "/verify"
   logButton = "SignUp"
-  res.render("signin",{var1:inc, clientStatus: clientStatus, logButton: logButton})
+  
+  res.render("signin",{var1:inc, clientStatus: clientStatus, logButton: logButton,menu:menu,url: req.url})
+})
+
+app.get("/contact",function(req,res){
+  if(req.isAuthenticated()){
+    clientStatus = "/logout"
+    logButton = "Logout"
+    res.render("contact", {clientStatus: clientStatus, logButton: logButton,menu:menu,url: req.url});
+} else {
+  clientStatus = "/verify"
+  logButton = "signup"
+    res.render("signin", {var1: inc,clientStatus: clientStatus, logButton: logButton,menu:menu,url: req.url});
+}
+});
+
+app.post("/contact",function(req,res){
+  if(req.isAuthenticated()){
+    clientStatus = "/logout"
+    logButton = "Logout"
+    let transport = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: 'blogwepbyteckgeeks@gmail.com',
+        pass: process.env.CLIENT_PASS
+      }
+    });
+    
+    var mailOptions = {
+      from: 'blogwepbyteckgeeks@gmail.com',
+      to: 'blogwepbyteckgeeks@gmail.com',
+      subject: "Report: "+req.body.subject+" Contact Mail From "+req.body.name,
+      text: req.body.message+" User Email: "+req.body.email+" User ID: "+req.user._id
+    };
+    
+    transport.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        
+        return console.log(error);
+      }
+      console.log('Message sent: %s', info.messageId);
+    });
+    res.redirect("/blog");
+} else {
+  clientStatus = "/verify"
+  logButton = "signup"
+    res.render("signin", {var1: inc,clientStatus: clientStatus, logButton: logButton,menu:menu,url: req.url});
+}
+});
+
+app.get("/about",function(req,res){
+  if(req.isAuthenticated()){
+    clientStatus = "/logout"
+    logButton = "Logout"
+    res.render("about", {clientStatus: clientStatus, logButton: logButton,menu:menu,url: req.url});
+} else {
+  clientStatus = "/verify"
+  logButton = "signUp"
+    res.render("about", {clientStatus: clientStatus, logButton: logButton,menu:menu,url: req.url});
+}
 })
 
 app.get("/verify",function(req,res){
   clientStatus = "/signin"
   logButton = "SignIn"
-  res.render("verify", {clientStatus: clientStatus, logButton: logButton})
+  res.render("verify", {clientStatus: clientStatus, logButton: logButton,menu:menu,url: req.url})
 })
 app.post("/verify",function(req,res){
   clientStatus = "/signin"
   logButton = "SignIn"
   userEmail = req.body.email;
   x= random();
-  
-  
-
   let transport = nodemailer.createTransport({
     service: 'gmail',
     auth: {
@@ -190,17 +272,17 @@ app.get("/verify/OTP",function(req,res){
   clientStatus = "/signin"
   logButton = "SignIn"
   errOtp = ""
-  res.render("otp", {clientStatus: clientStatus, logButton: logButton,errOtp: errOtp})
+  res.render("otp", {clientStatus: clientStatus, logButton: logButton,errOtp: errOtp,menu:menu,url: req.url})
 })
 app.post("/verify/OTP",function(req,res){
   clientStatus = "/signin"
   logButton = "SignIn"
   if(Number(req.body.otp) === x){
     err = ""
-    res.render("signup", {var1:inc,clientStatus: clientStatus, logButton: logButton,  LoginAs: userEmail, err: err})
+    res.render("signup", {var1:inc,clientStatus: clientStatus, logButton: logButton,  LoginAs: userEmail, err: err,menu:menu,url: req.url})
   } else {
     errOtp = "Invalid OTP"
-    res.render("otp",{clientStatus: clientStatus, logButton: logButton,errOtp: errOtp})
+    res.render("otp",{clientStatus: clientStatus, logButton: logButton,errOtp: errOtp,menu:menu,url: req.url})
   }
   
 })
@@ -212,7 +294,7 @@ app.get("/questions", function(req,res){
     logButton = "Logout"
     Question.find().sort({_id: -1}).exec(function(err, foundQuestions){
       if(!err){
-        res.render("questions", {questions: foundQuestions, clientStatus: clientStatus, logButton: logButton});
+        res.render("questions", {questions: foundQuestions, clientStatus: clientStatus, logButton: logButton,menu:menu,url: req.url});
       } else {
         res.send(err);
       }
@@ -223,7 +305,7 @@ app.get("/questions", function(req,res){
   logButton = "SignIn"
   Question.find().sort({_id: -1}).exec(function(err, foundQuestions){
     if(!err){
-      res.render("questions", {questions: foundQuestions, clientStatus: clientStatus, logButton: logButton});
+      res.render("questions", {questions: foundQuestions, clientStatus: clientStatus, logButton: logButton,menu:menu,url: req.url});
     } else {
       res.send(err);
     }
@@ -234,40 +316,26 @@ app.get("/questions", function(req,res){
 
 app.post("/questions/search", function(req,res){
 
-  if(req.isAuthenticated()){
     clientStatus = "/logout"
     logButton = "Logout"
     Question.find({$text: {$search: req.body.search}}).sort({_id: -1}).exec(function(err, foundQuestions){
       if(!err){
-        res.render("questions", {questions: foundQuestions, clientStatus: clientStatus, logButton: logButton});
+        res.render("questions", {questions: foundQuestions, clientStatus: clientStatus, logButton: logButton,menu:menu,url: req.url});
       } else {
         res.send(err);
       }
     })
-   
-} else {
-  clientStatus = "/signin"
-  logButton = "SignIn"
-  Question.find({$text: {$search: req.body.search}}).sort({_id: -1}).exec(function(err, foundQuestions){
-    if(!err){
-      res.render("questions", {questions: foundQuestions, clientStatus: clientStatus, logButton: logButton});
-    } else {
-      res.send(err);
-    }
-  })
-    
-}
 })
 
 app.get("/ask_question", function(req,res){
   if(req.isAuthenticated()){
     clientStatus = "/logout"
     logButton = "Logout"
-    res.render("ask_question", {clientStatus: clientStatus, logButton: logButton});
+    res.render("ask_question", {clientStatus: clientStatus, logButton: logButton,menu:menu,url: req.url});
 } else {
   clientStatus = "/signin"
   logButton = "SignIn"
-    res.render("signin", {var1:inc,clientStatus: clientStatus, logButton: logButton});
+    res.render("signin", {var1:inc,clientStatus: clientStatus, logButton: logButton,menu:menu,url: req.url});
 }
  
 })
@@ -278,11 +346,11 @@ app.post("/blog/report", function(req,res){
     reportId = req.body.reportId;
     clientStatus = "/logout"
     logButton = "Logout"
-    res.render("report", {clientStatus: clientStatus, logButton: logButton});
+    res.render("report", {clientStatus: clientStatus, logButton: logButton,menu:menu,url: req.url});
 } else {
   clientStatus = "/signin"
   logButton = "SignIn"
-    res.render("signin", {var1:inc,clientStatus: clientStatus, logButton: logButton});
+    res.render("signin", {var1:inc,clientStatus: clientStatus, logButton: logButton,menu:menu,url: req.url});
 }
 
 })
@@ -316,7 +384,7 @@ app.post("/blog/report/mail", function(req,res){
 } else {
   clientStatus = "/signin"
   logButton = "SignIn"
-    res.render("signin", {var1:inc,clientStatus: clientStatus, logButton: logButton});
+    res.render("signin", {var1:inc,clientStatus: clientStatus, logButton: logButton,menu:menu,url: req.url});
 }
 })
 
@@ -325,11 +393,11 @@ app.post("/questions/report", function(req,res){
     reportId = req.body.reportId;
     clientStatus = "/logout"
     logButton = "Logout"
-    res.render("report", {clientStatus: clientStatus, logButton: logButton});
+    res.render("report", {clientStatus: clientStatus, logButton: logButton,menu:menu,url: req.url});
 } else {
   clientStatus = "/signin"
   logButton = "SignIn"
-    res.render("signin", {var1:inc,clientStatus: clientStatus, logButton: logButton});
+    res.render("signin", {var1:inc,clientStatus: clientStatus, logButton: logButton,menu:menu,url: req.url});
 }
 
 })
@@ -361,7 +429,7 @@ app.get("/blog",function(req,res){
     logButton = "Logout"
     BlogPost.find().sort({_id: -1}).exec(function(err,foundPost){
       if(err) console.log(err);
-      res.render("blog",{BlogPost: foundPost, clientStatus: clientStatus, logButton: logButton})
+      res.render("blog",{BlogPost: foundPost, clientStatus: clientStatus, logButton: logButton,menu:menu,url: req.url})
   })
 
 } else {
@@ -369,7 +437,7 @@ app.get("/blog",function(req,res){
   logButton = "Login"
   BlogPost.find().sort({_id: -1}).exec(function(err,foundPost){
     if(err) console.log(err);
-    res.render("blog",{BlogPost: foundPost, clientStatus: clientStatus, logButton: logButton})
+    res.render("blog",{BlogPost: foundPost, clientStatus: clientStatus, logButton: logButton,menu:menu,url: req.url})
 })
 }
 })
@@ -380,7 +448,7 @@ app.post("/blog/search", function(req, res){
     logButton = "Logout"
     BlogPost.find({$text: {$search: req.body.search}}).sort({_id: -1}).exec(function(err,foundPost){
       if(err) console.log(err);
-      res.render("blog",{BlogPost: foundPost, clientStatus: clientStatus, logButton: logButton})
+      res.render("blog",{BlogPost: foundPost, clientStatus: clientStatus, logButton: logButton,menu:menu,url: req.url})
   })
 
 } else {
@@ -388,7 +456,7 @@ app.post("/blog/search", function(req, res){
   logButton = "Login"
   BlogPost.find({$text: {$search: req.body.search}}).sort({_id: -1}).exec(function(err,foundPost){
     if(err) console.log(err);
-    res.render("blog",{BlogPost: foundPost, clientStatus: clientStatus, logButton: logButton})
+    res.render("blog",{BlogPost: foundPost, clientStatus: clientStatus, logButton: logButton,menu:menu,url: req.url})
 })
 }
 })
@@ -397,17 +465,16 @@ app.get("/blogsubmit",function(req,res){
   if(req.isAuthenticated()){
     clientStatus = "/logout"
     logButton = "Logout"
-    res.render("blogsubmit", {clientStatus: clientStatus, logButton: logButton});
+    res.render("blogsubmit", {clientStatus: clientStatus, logButton: logButton,menu:menu,url: req.url});
 } else {
   clientStatus = "/verify"
   logButton = "signup"
-  res.render("signin", {var1:inc, clientStatus: clientStatus, logButton: logButton});
+  res.render("signin", {var1:inc, clientStatus: clientStatus, logButton: logButton,menu:menu,url: req.url});
 }
 })
 
 
 app.post("/blogsubmit",function(req,res){
-  console.log(req.user)
   const newblog= new BlogPost({
     title:req.body.blogtitle,
     content:req.body.content,
@@ -449,7 +516,7 @@ if(req.body.pass === req.body.password){
 })
 } else {
   err = "Password Dosen't Match";
-  res.render("signup", {var1:inc,clientStatus: clientStatus, logButton: logButton,LoginAs: userEmail, err: err});
+  res.render("signup", {var1:inc,clientStatus: clientStatus, logButton: logButton,LoginAs: userEmail, err: err,menu:menu,url: req.url});
 }
 
 
@@ -491,7 +558,7 @@ app.get("/:questionTitle", function(req,res){
     logButton = "Logout"
     Question.findOne({title: questionTitle}, function(err, foundQuestion){
       if(foundQuestion){
-        res.render("singleQuestion",{_id: foundQuestion._id, title: foundQuestion.title, description: foundQuestion.description, code: foundQuestion.code, answers: foundQuestion.answers, clientStatus: clientStatus, logButton: logButton})
+        res.render("singleQuestion",{_id: foundQuestion._id, title: foundQuestion.title, description: foundQuestion.description, code: foundQuestion.code, answers: foundQuestion.answers, clientStatus: clientStatus, logButton: logButton,menu:menu,url: req.url})
       } else {
         console.log(err);
       }
@@ -501,7 +568,7 @@ app.get("/:questionTitle", function(req,res){
   logButton = "signup"
   Question.findOne({title: questionTitle}, function(err, foundQuestion){
     if(foundQuestion){
-      res.render("singleQuestion",{_id: foundQuestion._id, title: foundQuestion.title, description: foundQuestion.description, code: foundQuestion.code, answers: foundQuestion.answers, clientStatus: clientStatus, logButton: logButton})
+      res.render("singleQuestion",{_id: foundQuestion._id, title: foundQuestion.title, description: foundQuestion.description, code: foundQuestion.code, answers: foundQuestion.answers, clientStatus: clientStatus, logButton: logButton,menu:menu,url: req.url})
     } else {
       console.log(err);
     }
@@ -528,7 +595,7 @@ app.post("/questions/:questionId", function(req, res){
       if(foundQuestion){
         foundQuestion.answers.push(newAnswer);
         foundQuestion.save();
-        res.render("singleQuestion",{_id: questionId, title: foundQuestion.title, description: foundQuestion.description, code: foundQuestion.code, answers: foundQuestion.answers, clientStatus: clientStatus, logButton: logButton})
+        res.render("singleQuestion",{_id: questionId, title: foundQuestion.title, description: foundQuestion.description, code: foundQuestion.code, answers: foundQuestion.answers, clientStatus: clientStatus, logButton: logButton,menu:menu,url: req.url})
       } else {
         res.send(err);
       }
@@ -541,7 +608,7 @@ app.post("/questions/:questionId", function(req, res){
     if(foundQuestion){
       foundQuestion.answers.push(newAnswer);
       foundQuestion.save();
-      res.render("singleQuestion",{_id: questionId, title: foundQuestion.title, description: foundQuestion.description, code: foundQuestion.code, answers: foundQuestion.answers, clientStatus: clientStatus, logButton: logButton})
+      res.render("singleQuestion",{_id: questionId, title: foundQuestion.title, description: foundQuestion.description, code: foundQuestion.code, answers: foundQuestion.answers, clientStatus: clientStatus, logButton: logButton,menu:menu,url: req.url})
     } else {
       res.send(err);
     }

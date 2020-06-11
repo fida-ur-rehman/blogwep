@@ -1,0 +1,22 @@
+<%- include("partials/header") -%>
+<section class="main-section">
+<div class="container bg p-5">
+    <h4>Contact Us</h4>
+<form action="/contact" method="post">
+    <div class="form-group col-lg-6">
+        <label for="">Your Name</label>
+        <input class="form-control" type="text" name="name" required>
+        <label for="">Email</label>
+        <input class="form-control" type="email" name="email" required>
+        <label for="">Subject</label>
+        <input class="form-control" type="text" name="subject" required>
+        <label for="">Message</label>
+        <textarea class="form-control" name="message" id="" cols="auto" rows="5" required></textarea>
+    </div>
+
+    <button class="btn btn-primary" type="submit" name="button">Send Mail</button>
+</form>
+</div>
+</section>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<%- include("partials/footer")-%>
